@@ -1,0 +1,21 @@
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+df = pd.read_csv('c:\\Users\\Galym Ayana\\Desktop\\python\\data.csv')
+diagnosis_type = {'M': 1, 'B': 0}
+df.diagnosis = [diagnosis_type[item] for item in df.diagnosis]
+for col in df.columns:
+    null_num = df[col].isnull().values.any()
+    if null_num:
+        print(f"col {col} has {null_num} null values")
+        print(f"Droping {col}")
+        df = df.drop(col, axis=1)
+X, y = df.drop("diagnosis", axis=1), df.diagnosis
+print("X.shape: {}, y.shape: {}".format(X.shape, y.shape))
+X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=0.2, random_state=123)
+dt_clf_4 = DecisionTreeClassifier(max_depth = 4)
+dt_clf_4.fit(X_train, y_train)
+y_pred_4 = dt_clf_4.predict(X_test)
+accuracy = float(np.sum(y_pred_4==y_test))/y_test.shape[0]
+print("accuracy:", accuracy)
